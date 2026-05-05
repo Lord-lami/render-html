@@ -39,7 +39,7 @@ var TypeTemplates *template.Template = template.Must(template.ParseFS(templateFS
 	"templates/*/*.html",
 	"templates/*/*/*.html"))
 
-// RenderTypeFunc maps the string of a type to the rendering function of type RenderFunc.
+// NewRenderFuncFunc maps the string of a type to the rendering function of type RenderFunc.
 //
 // It enables the addition of rendering functions for custom types and the modification
 // of the rendering functions for the the currently handled types.
@@ -66,13 +66,13 @@ var TypeTemplates *template.Template = template.Must(template.ParseFS(templateFS
 //
 // be used to modify this map.
 var TypeToRenderFuncMap map[reflect.Type]RenderFunc = map[reflect.Type]RenderFunc{
-	reflect.TypeFor[int]():             RenderType[int]("int.html"),
-	reflect.TypeFor[string]():          RenderType[string]("string.html"),
-	reflect.TypeFor[bool]():            RenderType[bool]("bool.html"),
+	reflect.TypeFor[int]():             NewRenderFunc[int]("int.html"),
+	reflect.TypeFor[string]():          NewRenderFunc[string]("string.html"),
+	reflect.TypeFor[bool]():            NewRenderFunc[bool]("bool.html"),
 	reflect.TypeFor[Ignored]():         func(name string, data any) template.HTML { return "" },
 	reflect.TypeFor[DateString]():      renderDateString,
-	reflect.TypeFor[LinkString]():      RenderType[LinkString]("linkstring.html"),
-	reflect.TypeFor[ImageLinkString](): RenderType[ImageLinkString]("imagelinkstring.html"),
+	reflect.TypeFor[LinkString]():      NewRenderFunc[LinkString]("linkstring.html"),
+	reflect.TypeFor[ImageLinkString](): NewRenderFunc[ImageLinkString]("imagelinkstring.html"),
 }
 
 // Typefor is a helper function that wraps reflect.TypeFor[T]()
@@ -88,13 +88,13 @@ func MapTypeToRenderFunc[T any](f RenderFunc) {
 	TypeToRenderFuncMap[TypeFor[T]()] = f
 }
 
-// RenderType takes a type T and a template and returns a function of type RenderFunc.
+// NewRenderFunc takes a type T and a template and returns a function of type RenderFunc.
 // The returned function simply takes a name string and data of any type and returns
-// the HTML using the template passed to RenderType.
+// the HTML using the template passed to NewRenderFunc.
 //
-// RenderType is meant to be used to generate rendering functions for simple types
+// NewRenderFunc is meant to be used to generate rendering functions for simple types
 // with the template handling the logic. It does not further process the data.
-func RenderType[T any](chosenTemplateName string) RenderFunc {
+func NewRenderFunc[T any](chosenTemplateName string) RenderFunc {
 	return func(name string, data any) (dataHTML template.HTML) {
 		value := data.(T)
 		var templateData struct {

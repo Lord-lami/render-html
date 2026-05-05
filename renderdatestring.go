@@ -28,6 +28,6 @@ func renderDateString(name string, data any) (dateStringHTML template.HTML) {
 		Raw     string // for the time tag's datetime attribute
 		Display string // what is displayed
 	}
-	dateStringHTML = RenderType[DateData]("datestring.html")(name, DateData{raw, display})
+	dateStringHTML = NewRenderFunc[DateData]("datestring.html")(name, DateData{raw, display})
 	return
 }
