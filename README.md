@@ -76,4 +76,15 @@ olamide := profileLinkString("https://github.com/Lord-lami")
 render.Render("olamide", olamide)
 ```
 
-output
+output:
+```html
+<a class="olamide-profile-link" href="https://github.com/Lord-lami">olamide's profile</a>
+```
+
+## Credits
+[Olamide Ifarajimi](https://github.com/Lord-lami)
+
+## License
+Copyright © 2026
+
+This Project is [GPL](https://www.gnu.org/licenses/gpl-3.0.en.html) Licensed
