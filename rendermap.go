@@ -2,19 +2,17 @@ package render
 
 import (
 	"html/template"
-	"log"
 	"reflect"
-	"runtime/debug"
 	"strconv"
 	"sync"
 )
 
 // RenderMap renders a map using the map.html template.
+// It panics if data is not a map.
 func RenderMap(mapName string, data any) (mapHTML template.HTML) {
 	mapVal := reflect.ValueOf(data)
 	if mapVal.Kind() != reflect.Map {
-		log.Println("renderMap: map data was not passed as a map", string(debug.Stack()))
-		return ""
+		panic("renderMap: map data was not passed as a map")
 	}
 
 	keyRenderFunc := TypeToRenderFuncMap[mapVal.Type().Key()]

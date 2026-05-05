@@ -2,17 +2,16 @@ package render
 
 import (
 	"html/template"
-	"log"
 	"reflect"
 	"sync"
 )
 
 // RenderObj renders a struct using the object.html template.
+// It panics if data is not a struct.
 func RenderObj(objName string, data any) (objHTML template.HTML) {
 	objVal := reflect.ValueOf(data)
 	if objVal.Type().Kind() != reflect.Struct {
-		log.Println("renderObj: object data was not passed as a struct")
-		return ""
+		panic("renderObj: object data was not passed as a struct")
 	}
 
 	var wg sync.WaitGroup
@@ -27,9 +26,6 @@ func RenderObj(objName string, data any) (objHTML template.HTML) {
 			renderFunc := selectRenderFuncFor(objVal.Field(i).Type())
 			name := objVal.Type().Field(i).Name
 			data := objVal.Field(i).Interface()
-			if renderFunc == nil {
-				log.Println(name)
-			}
 			element := renderFunc(name, data)
 			elements[i] = element
 		}(i)

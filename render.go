@@ -6,9 +6,7 @@ package render
 import (
 	"embed"
 	"html/template"
-	"log"
 	"reflect"
-	"runtime/debug"
 )
 
 // Type Ignored is used to store any value that should not be rendered as HTML.
@@ -106,8 +104,7 @@ func NewRenderFunc[T any](chosenTemplateName string) RenderFunc {
 		var err error
 		dataHTML, err = renderData(templateData, chosenTemplateName)
 		if err != nil {
-			log.Println(err, string(debug.Stack()))
-			return
+			panic(err)
 		}
 		return
 	}
@@ -117,6 +114,8 @@ func NewRenderFunc[T any](chosenTemplateName string) RenderFunc {
 // type RenderFunc.
 //
 // It is used internally for rendering composite types.
+// It panics if dType doesn't have a rendering function mapped to it in the 
+// render.TypeToRenderFuncMap map.
 func selectRenderFuncFor(dType reflect.Type) (renderFunc RenderFunc) {
 	switch dType.Kind() {
 	case reflect.Struct:
@@ -128,13 +127,19 @@ func selectRenderFuncFor(dType reflect.Type) (renderFunc RenderFunc) {
 	default:
 		renderFunc = TypeToRenderFuncMap[dType]
 	}
+	if renderFunc == nil {
+		panic("there is no render function for type " + dType.Name() + " in the render.TypeToRenderFuncMap map")
+	}
 	return
 }
 
+// Render renders the value passed to the data parameter. The name parameter is optional
+// and is by default used as the class of the HTML element.
+// It panics if the type of data doesn't have a rendering function mapped to it in the 
+// render.TypeToRenderFuncMap map or if data is an array, slice, struct or map that contains
+// elements that have types that don't have a rendering function mapped to them in the
+// render.TypeToRenderFuncMap map.
 func Render(name string, data any) template.HTML {
 	renderFunc := selectRenderFuncFor(reflect.TypeOf(data))
-	if renderFunc == nil {
-		panic(reflect.TypeOf(data).String())
-	}
 	return renderFunc(name, data)
 }

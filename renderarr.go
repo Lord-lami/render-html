@@ -2,21 +2,18 @@ package render
 
 import (
 	"html/template"
-	"log"
 	"reflect"
-	"runtime/debug"
 	"strconv"
 	"sync"
 )
 
-
-// RenderArr renders the html of an array or slice using 
+// RenderArr renders the html of an array or slice using
 // the array.html template.
+// It panics if data is not an array or slice.
 func RenderArr(arrName string, data any) (arrHTML template.HTML) {
 	if reflect.TypeOf(data).Kind() != reflect.Array &&
 		reflect.TypeOf(data).Kind() != reflect.Slice {
-		log.Println("renderArr: array data was not passed as a slice or array", string(debug.Stack()))
-		return ""
+		panic("renderArr: array data was not passed as a slice or array")
 	}
 
 	arrVal := reflect.ValueOf(data)
