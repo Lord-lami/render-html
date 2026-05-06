@@ -116,6 +116,7 @@ func RenderBasic(chosenTemplateName string) RenderFunc {
 // It panics if dType doesn't have a rendering function mapped to it in the 
 // render.TypeToRenderFuncMap map.
 func selectRenderFuncFor(dType reflect.Type) (renderFunc RenderFunc) {
+	renderFunc = TypeToRenderFuncMap[dType]
 	switch dType.Kind() {
 	case reflect.Struct:
 		renderFunc = RenderObj
@@ -123,8 +124,6 @@ func selectRenderFuncFor(dType reflect.Type) (renderFunc RenderFunc) {
 		renderFunc = RenderArr
 	case reflect.Map:
 		renderFunc = RenderMap
-	default:
-		renderFunc = TypeToRenderFuncMap[dType]
 	}
 	if renderFunc == nil {
 		panic("there is no render function for type " + dType.Name() + " in the render.TypeToRenderFuncMap map")
