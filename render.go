@@ -126,7 +126,8 @@ func selectRenderFuncFor(dType reflect.Type) (renderFunc RenderFunc) {
 		renderFunc = RenderMap
 	}
 	if renderFunc == nil {
-		panic("there is no render function for type " + dType.Name() + " in the render.TypeToRenderFuncMap map")
+		panic("there is no render function for type " + dType.Name() + 
+		" in the render.TypeToRenderFuncMap map")
 	}
 	return
 }
