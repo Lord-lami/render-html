@@ -12,10 +12,6 @@ import (
 // Type Ignored is used to store any value that should not be rendered as HTML.
 type Ignored any
 
-// Type DateString encapsulates the string type and is used to render dates
-// with datestring.html.
-type DateString string
-
 // Type LinkString encapsulates the string type and is used to render links
 // with linkstring.html.
 type LinkString string

@@ -5,6 +5,11 @@ import (
 	"time"
 )
 
+// Type DateString encapsulates the string type and is used to render dates
+// with datestring.html.
+// The date must be written in dd-mm-yyyy format.
+type DateString string
+
 // renderDateString renders a date using the datestring.html template.
 // It panics if the data is not a date string of the format dd-mm-yyyy.
 func renderDateString(name string, data any) (dateStringHTML template.HTML) {
