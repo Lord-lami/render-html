@@ -9,6 +9,9 @@ import (
 
 // RenderMap renders a map using the map.html template.
 // It panics if data is not a map.
+//
+// The order of the key value pairs is not specified and 
+// is not guaranteed to be the same from one call to the next. 
 func RenderMap(mapName string, data any) (mapHTML template.HTML) {
 	mapVal := reflect.ValueOf(data)
 	if mapVal.Kind() != reflect.Map {
